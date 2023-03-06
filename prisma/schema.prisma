@@ -11,27 +11,26 @@ datasource db {
 }
 
 model Recipe {
-  id                  String                @id @default(cuid())
-  name                String
-  description         String
-  ingredient          Ingredient[]
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  IngredientsOnRecipe IngredientsOnRecipe[]
+  id          String                @id @default(cuid())
+  name        String
+  description String
+  ingredients IngredientsOnRecipe[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 }
 
 model Ingredient {
-  id                  String                @id @default(cuid())
-  name                String                @unique
-  description         String
-  recipe              Recipe?               @relation(fields: [recipeId], references: [id])
-  recipeId            String?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  IngredientsOnRecipe IngredientsOnRecipe[]
+  id          String                @id @default(cuid())
+  name        String                @unique
+  description String
+  recipes     IngredientsOnRecipe[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 }
 
 model IngredientsOnRecipe {
+  quantity     Int
+  unit         Unit
   recipe       Recipe     @relation(fields: [recipeId], references: [id])
   recipeId     String
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
@@ -40,6 +39,28 @@ model IngredientsOnRecipe {
   assignedBy   String
 
   @@id([recipeId, ingredientId])
+}
+
+enum Unit {
+  // Metric Volume
+  MILLILITERS
+  LITERS
+  DECILITERS
+  // Imperial Volume
+  TEASPOONS
+  TABLESPOONS
+  FLUID_OUNCES
+  CUPS
+  PINTS
+  QUARTS
+  GALLONS
+  // Metric Mass
+  MILLIGRAMS
+  GRAMS
+  KILOGRAMS
+  // Imperial Mass
+  OUNCES
+  POUNDS
 }
 
 // Necessary for Next auth
@@ -69,6 +90,11 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -77,6 +103,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role          Role      @default(USER)
 }
 
 model VerificationToken {
