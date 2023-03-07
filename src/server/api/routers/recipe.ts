@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { createRecipeSchema } from "~/models";
+import { Prisma } from "@prisma/client";
 
 import {
   createTRPCRouter,
