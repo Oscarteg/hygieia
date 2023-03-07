@@ -8,6 +8,18 @@ import {
 import { type ReactNode } from "react";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import i18nConfig from "../../i18n.config.mjs";
+import { appWithTranslation } from "next-i18next";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common"])),
+      // Will be passed to the page component as props
+    },
+  };
+}
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   Component,
@@ -18,10 +30,11 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return getLayout(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     <SessionProvider session={session}>
       <Component {...pageProps} />
     </SessionProvider>
   );
 };
 
-export default api.withTRPC(MyApp);
+export default api.withTRPC(appWithTranslation(MyApp));
