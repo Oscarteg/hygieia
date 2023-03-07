@@ -16,6 +16,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return getLayout(
     <SessionProvider session={session}>
       <Component {...pageProps} />
